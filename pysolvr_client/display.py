@@ -1,5 +1,11 @@
 """HTML rendering for notebook outputs - cards, tables, tabs, progress, errors."""
-from IPython.display import HTML, display, clear_output
+try:
+    from IPython.display import HTML, display, clear_output
+except ImportError:
+    def display(x): pass
+    def clear_output(**kw): pass
+    class HTML:
+        def __init__(self, data=""): self.data = data
 
 
 class Display:
@@ -143,7 +149,8 @@ class Display:
         tab_bodies = ""
         for i, (label, content) in enumerate(tab_dict.items()):
             active = " active" if i == 0 else ""
-            tab_headers += f'<div class="pysolvr-tab{active}" onclick="document.querySelectorAll(\\'.pysolvr-tab-{uid}\\').forEach(e=>e.classList.remove(\\'active\\'));document.querySelectorAll(\\'.pysolvr-tc-{uid}\\').forEach(e=>e.classList.remove(\\'active\\'));this.classList.add(\\'active\\');document.getElementById(\\'tc-{uid}-{i}\\').classList.add(\\'active\\')">{label}</div>'
+            onclick = f"document.querySelectorAll('.pysolvr-tab-{uid}').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.pysolvr-tc-{uid}').forEach(e=>e.classList.remove('active'));this.classList.add('active');document.getElementById('tc-{uid}-{i}').classList.add('active')"
+            tab_headers += f'<div class="pysolvr-tab{active}" onclick="{onclick}">{label}</div>'
             tab_bodies += f'<div id="tc-{uid}-{i}" class="pysolvr-tc-{uid} pysolvr-tab-content{active}">{content}</div>'
         # Fix class on tabs for JS targeting
         tab_headers = tab_headers.replace('class="pysolvr-tab', f'class="pysolvr-tab pysolvr-tab-{uid}')

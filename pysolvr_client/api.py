@@ -1,7 +1,6 @@
 """API wrapper with auth, retries, and styled error/result handling."""
 import requests
 import time
-from IPython.display import display, HTML, clear_output
 
 
 class ApiClient:
@@ -50,6 +49,7 @@ class ApiClient:
             return resp
 
         # Poll with spinner
+        from IPython.display import display, HTML, clear_output
         start = time.time()
         display(HTML('<div style="padding:8px;color:#888;">Working...</div>'))
         while (time.time() - start) < timeout:

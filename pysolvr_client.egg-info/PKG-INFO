@@ -1,0 +1,31 @@
+Metadata-Version: 2.4
+Name: pysolvr-client
+Version: 0.1.0
+Summary: Shared notebook client library for pysolvr businesses
+License: MIT
+Project-URL: Homepage, https://github.com/dAIvdMercer/pysolvr-client
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.28
+
+# pysolvr-client
+
+Shared notebook client library for [pysolvr](https://pysolvr.com) businesses.
+
+Provides API wrapper, HTML display components, and Google Drive integration for Colab notebooks.
+
+## Install
+
+```
+pip install pysolvr-client
+```
+
+## Usage
+
+```python
+from pysolvr_client import ApiClient, Display, DriveManager
+
+client = ApiClient(base_url, api_key)
+ui = Display('#6366F1', '#10B981')
+drive_mgr = DriveManager('my-business', ['outputs', 'reports'])
+```
