@@ -8,9 +8,7 @@ def cell(config: dict) -> dict:
         "result = client.get_usage()\n",
         "if result['ok']:\n",
         "    data = result['data']\n",
-        "    ui.usage_bar(data.get('current_month_spend_usd', 0), data.get('monthly_limit_usd', 1))\n",
-        "    if data.get('recent'):\n",
-        "        ui.table(data['recent'])\n",
+        "    ui.usage_bar(data.get('monthly_spend_usd', 0), data.get('monthly_limit_usd', 1))\n",
         "else:\n",
         "    ui.error(result.get('error', 'Could not fetch usage'), 'Check your API key')",
     ]

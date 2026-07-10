@@ -91,5 +91,5 @@ class ApiClient:
         return result["ok"] and result.get("data", {}).get("status") == "ok"
 
     def get_usage(self) -> dict:
-        """Get usage data."""
-        return self.call("GET", "/usage")
+        """Get usage data from account endpoint."""
+        return self.call("GET", "/account")
