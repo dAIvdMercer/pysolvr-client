@@ -15,9 +15,10 @@ def cell(config: dict) -> dict:
     source = [
         "# @title Setup\n",
         "# @markdown Run this cell every session.\n",
+        "# @markdown\n",
         f"# @markdown First time? [Getting started guide](https://{slug}.pysolvr.com/docs/getting-started)\n",
-        f"# @markdown Save a copy: File > Save a copy in Drive\n",
-        f"# @markdown Add API key: click key icon (left sidebar) > add `{slug_upper}_API_KEY`\n",
+        f"# @markdown - Save a copy: File > Save a copy in Drive\n",
+        f"# @markdown - Add API key: click key icon (left sidebar) > add `{slug_upper}_API_KEY`\n",
         "!pip install -q -U pysolvr-client\n",
         "import sys\n",
         "from google.colab import userdata, drive\n",
