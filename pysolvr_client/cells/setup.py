@@ -6,6 +6,7 @@ def cell(config: dict) -> dict:
     slug = config["business"]["slug"]
     slug_upper = slug.upper().replace("-", "_")
     name = config["business"]["name"]
+    api_base = config.get("api_base", f"https://{slug}.pysolvr.com/api")
     primary_color = config.get("growth", {}).get("site", {}).get("style", {}).get("primary_color", "#4F46E5")
     accent_color = config.get("growth", {}).get("site", {}).get("style", {}).get("accent_color", "#10B981")
     folders = config.get("notebook", {}).get("drive_structure", {}).get("folders", [])
@@ -35,7 +36,7 @@ def cell(config: dict) -> dict:
         "\n",
         "from pysolvr_client import ApiClient, Display, DriveManager\n",
         "\n",
-        f"API_BASE = 'https://{slug}.pysolvr.com/api'\n",
+        f"API_BASE = '{api_base}'\n",
         "client = ApiClient(API_BASE, API_KEY)\n",
         f"ui = Display('{primary_color}', '{accent_color}')\n",
         f"drive_mgr = DriveManager('{slug}', [{folders_str}])\n",
