@@ -137,18 +137,21 @@ class Display:
 
     def usage_bar(self, spent: float, limit: float, label: str = "Monthly usage"):
         """Render a usage progress bar."""
+        html = self.usage_bar_html(spent, limit, label)
+        display(HTML(self._styles + html))
+
+    def usage_bar_html(self, spent: float, limit: float, label: str = "Monthly usage") -> str:
+        """Return usage bar HTML string (for embedding in tabs)."""
         pct = min((spent / limit) * 100, 100) if limit > 0 else 0
         color = self.accent if pct < 80 else ("#f59e0b" if pct < 95 else "#ef4444")
-        html = f"""{self._styles}
-        <div class="pysolvr-card">
-            <h3>{label}</h3>
+        return f"""<div style="font-family:Inter,system-ui,sans-serif;color:#f1f5f9">
+            <h3 style="font-size:16px;font-weight:500;margin:0 0 12px">{label}</h3>
             <div style="display:flex;justify-content:space-between;font-size:12px;color:#94a3b8;margin-bottom:6px">
                 <span>${spent:.2f} used</span><span>${limit:.2f} limit</span>
             </div>
             <div class="pysolvr-bar"><div class="pysolvr-bar-fill" style="width:{pct}%;background:{color}"></div></div>
             <p style="margin-top:6px;font-size:11px;color:#94a3b8">${limit-spent:.2f} remaining ({100-pct:.0f}%)</p>
         </div>"""
-        display(HTML(html))
 
     def cost_badge(self, tokens: int, cost_usd: float):
         """Render an inline cost badge."""
