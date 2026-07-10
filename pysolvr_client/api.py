@@ -17,12 +17,22 @@ class ApiClient:
                 r = requests.request(method, url, headers=self.headers, json=payload, timeout=30)
                 latency_ms = int((time.time() - start) * 1000)
                 if r.status_code in (200, 202):
-                    return {"ok": True, "data": r.json(), "status": r.status_code, "latency_ms": latency_ms}
+                    body = r.json()
+                    # Unwrap standard envelope if present
+                    if isinstance(body, dict) and "ok" in body and "request_id" in body:
+                        if body["ok"]:
+                            return {"ok": True, "data": body.get("data", body), "status": r.status_code, "latency_ms": latency_ms}
+                        else:
+                            return {"ok": False, "error": body.get("error", "Unknown error"), "status": r.status_code, "latency_ms": latency_ms}
+                    return {"ok": True, "data": body, "status": r.status_code, "latency_ms": latency_ms}
                 elif r.status_code == 429 and attempt < retries:
                     time.sleep(2 ** attempt)
                     continue
                 else:
                     body = r.json() if r.headers.get("content-type", "").startswith("application/json") else {"message": r.text}
+                    # Unwrap standard envelope error
+                    if isinstance(body, dict) and "ok" in body and not body.get("ok"):
+                        return {"ok": False, "error": body.get("error", "Unknown error"), "status": r.status_code, "latency_ms": latency_ms}
                     return {"ok": False, "error": body.get("error", body.get("message", "Unknown error")), "status": r.status_code, "latency_ms": latency_ms}
             except requests.exceptions.Timeout:
                 if attempt < retries:
