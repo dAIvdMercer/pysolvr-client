@@ -32,7 +32,10 @@ class ApiClient:
                     body = r.json() if r.headers.get("content-type", "").startswith("application/json") else {"message": r.text}
                     # Unwrap standard envelope error
                     if isinstance(body, dict) and "ok" in body and not body.get("ok"):
-                        return {"ok": False, "error": body.get("error", "Unknown error"), "status": r.status_code, "latency_ms": latency_ms}
+                        result = {"ok": False, "error": body.get("error", "Unknown error"), "code": body.get("code"), "status": r.status_code, "latency_ms": latency_ms}
+                        if body.get("detail", {}).get("actions"):
+                            result["actions"] = body["detail"]["actions"]
+                        return result
                     return {"ok": False, "error": body.get("error", body.get("message", "Unknown error")), "status": r.status_code, "latency_ms": latency_ms}
             except requests.exceptions.Timeout:
                 if attempt < retries:

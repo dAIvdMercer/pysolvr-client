@@ -99,14 +99,28 @@ class Display:
         <style>@keyframes spin{{from{{transform:rotate(0deg)}}to{{transform:rotate(360deg)}}}}</style>"""
         display(HTML(html))
 
-    def error(self, message: str, suggestion: str = None):
-        """Render a friendly error card."""
+    def error(self, message: str, suggestion: str = None, actions: list = None):
+        """Render a friendly error card with optional action links.
+
+        Args:
+            message: Error message
+            suggestion: Optional suggestion text
+            actions: Optional list of {"label": str, "url": str} dicts
+        """
         suggestion_html = f'<p style="margin-top:8px;font-size:12px;color:#94a3b8">Suggestion: {suggestion}</p>' if suggestion else ""
+        actions_html = ""
+        if actions:
+            links = " | ".join(
+                f'<a href="{a["url"]}" target="_blank" style="color:{self.primary};text-decoration:none;font-weight:500">{a["label"]}</a>'
+                for a in actions
+            )
+            actions_html = f'<p style="margin-top:12px;font-size:13px">{links}</p>'
         html = f"""{self._styles}
         <div class="pysolvr-card" style="border-color:#ef444444">
             <h3><span class="pysolvr-badge pysolvr-error">Error</span></h3>
             <p style="font-size:14px">{message}</p>
             {suggestion_html}
+            {actions_html}
         </div>"""
         display(HTML(html))
 
