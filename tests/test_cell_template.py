@@ -30,14 +30,14 @@ def test_instructions_string():
 
 
 def test_instructions_list():
-    """List of instructions renders as bullet points."""
+    """List of instructions renders as separate markdown lines."""
     cell = cell_template(
         title="Test",
         instructions=["Step one", "Step two"],
     )
     source = "".join(cell["source"])
-    assert "# @markdown - Step one" in source
-    assert "# @markdown - Step two" in source
+    assert "# @markdown Step one" in source
+    assert "# @markdown Step two" in source
 
 
 def test_form_fields():

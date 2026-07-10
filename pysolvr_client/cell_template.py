@@ -23,13 +23,13 @@ def cell_template(title: str, instructions=None, form_fields=None, execute=None)
     # Title
     source.append(f"# @title {title}\n")
 
-    # Instructions (normal font markdown)
+    # Instructions (normal font markdown - no --- separators, no bold)
     if instructions:
         if isinstance(instructions, str):
             source.append(f"# @markdown {instructions}\n")
         elif isinstance(instructions, list):
             for line in instructions:
-                source.append(f"# @markdown - {line}\n")
+                source.append(f"# @markdown {line}\n")
 
     # Form fields
     if form_fields:
