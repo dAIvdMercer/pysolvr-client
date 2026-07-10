@@ -44,8 +44,12 @@ def cell(config: dict) -> dict:
         "if client.health_check():\n",
         f"    ui.success('Connected to {name} API', f'Drive: {{drive_mgr.root}}')\n",
         "else:\n",
-        "    ui.error('Could not connect to API', 'Check your API key and try again')",
+        "    ui.error('Could not connect to API', 'Check your API key and try again')\n",
     ]
+
+    # Business-specific extras (imports, state, etc.)
+    for line in config.get("setup_extra", []):
+        source.append(f"{line}\n")
 
     return {
         "cell_type": "code",
