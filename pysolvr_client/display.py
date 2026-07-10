@@ -164,12 +164,10 @@ class Display:
         for i, (label, content) in enumerate(tab_dict.items()):
             active = " active" if i == 0 else ""
             onclick = f"document.querySelectorAll('.pysolvr-tab-{uid}').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.pysolvr-tc-{uid}').forEach(e=>e.classList.remove('active'));this.classList.add('active');document.getElementById('tc-{uid}-{i}').classList.add('active')"
-            tab_headers += f'<div class="pysolvr-tab{active}" onclick="{onclick}">{label}</div>'
+            tab_headers += f'<div class="pysolvr-tab pysolvr-tab-{uid}{active}" onclick="{onclick}">{label}</div>'
             tab_bodies += f'<div id="tc-{uid}-{i}" class="pysolvr-tc-{uid} pysolvr-tab-content{active}">{content}</div>'
-        # Fix class on tabs for JS targeting
-        tab_headers = tab_headers.replace('class="pysolvr-tab', f'class="pysolvr-tab pysolvr-tab-{uid}')
         html = f"""{self._styles}
-        <div class="pysolvr-card">
+        <div style="font-family:Inter,system-ui,sans-serif;color:#f1f5f9">
             <div class="pysolvr-tabs">{tab_headers}</div>
             {tab_bodies}
         </div>"""
