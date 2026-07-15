@@ -159,7 +159,7 @@ class Display:
         display(HTML(self._styles + html))
 
     def tabs(self, tab_dict: dict):
-        """Render tabbed content. tab_dict = {label: html_content}."""
+        """Render tabbed content inside a card. tab_dict = {label: html_content}."""
         import uuid
         uid = uuid.uuid4().hex[:8]
         tab_headers = ""
@@ -170,7 +170,7 @@ class Display:
             tab_headers += f'<div class="pysolvr-tab pysolvr-tab-{uid}{active}" onclick="{onclick}">{label}</div>'
             tab_bodies += f'<div id="tc-{uid}-{i}" class="pysolvr-tc-{uid} pysolvr-tab-content{active}">{content}</div>'
         html = f"""{self._styles}
-        <div style="font-family:Inter,system-ui,sans-serif;color:#f1f5f9">
+        <div class="pysolvr-card">
             <div class="pysolvr-tabs">{tab_headers}</div>
             {tab_bodies}
         </div>"""
