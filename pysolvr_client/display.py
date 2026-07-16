@@ -166,6 +166,34 @@ class Display:
         except ImportError:
             return None
 
+    def card_widget(self, children: list, title: str = None):
+        """Return a styled VBox matching card visuals. Use for interactive widget cells.
+
+        Args:
+            children: list of widgets to display inside the card
+            title: optional header text displayed above children
+        """
+        try:
+            import ipywidgets as widgets
+            from IPython.display import HTML, display
+        except ImportError:
+            return None
+
+        style_html = widgets.HTML(
+            f'<style>.pysolvr-widget-card {{ background: #334155; border-radius: 8px; '
+            f'padding: 20px; margin: 8px 0; border: 1px solid #475569; color: #f1f5f9; '
+            f'font-family: Inter, system-ui, sans-serif; }}</style>'
+        )
+        header_items = [style_html]
+        if title:
+            header_items.append(widgets.HTML(
+                f'<h3 style="margin:0 0 12px 0;font-size:16px;font-weight:500;color:#f1f5f9">{title}</h3>'
+            ))
+
+        box = widgets.VBox(header_items + children)
+        box.add_class('pysolvr-widget-card')
+        return box
+
     def cost_badge(self, tokens: int, cost_usd: float):
         """Render an inline cost badge."""
         html = f'<span class="pysolvr-cost">{tokens:,} tokens | ${cost_usd:.4f}</span>'
