@@ -14,7 +14,7 @@ class Display:
         self.accent = accent_color
         self._styles = f"""
         <style>
-        .pysolvr-card {{ background: #334155; border-radius: 8px; padding: 20px; margin: 8px 0; border: 1px solid #475569; font-family: Inter, system-ui, sans-serif; color: #f1f5f9; }}
+        .pysolvr-card {{ background: #334155; border-radius: 8px; padding: 20px; margin: 8px 12px; border: 1px solid #475569; font-family: Inter, system-ui, sans-serif; color: #f1f5f9; }}
         .pysolvr-card h3 {{ margin: 0 0 12px 0; font-size: 16px; font-weight: 500; }}
         .pysolvr-header {{ background: linear-gradient(135deg, {primary_color}22, {accent_color}22); border: 1px solid {primary_color}44; border-radius: 12px; padding: 24px; text-align: center; font-family: Inter, system-ui, sans-serif; color: #f1f5f9; }}
         .pysolvr-header h1 {{ margin: 0; font-size: 28px; font-weight: 300; }}
@@ -161,7 +161,7 @@ class Display:
                 border='1px solid #475569',
                 border_radius='8px',
                 padding='20px',
-                margin='8px 0',
+                margin='8px 12px',
             )
         except ImportError:
             return None
@@ -181,7 +181,7 @@ class Display:
 
         style_html = widgets.HTML(
             f'<style>.pysolvr-widget-card {{ background: #334155; border-radius: 8px; '
-            f'padding: 20px; margin: 8px 0; border: 1px solid #475569; color: #f1f5f9; '
+            f'padding: 20px; margin: 8px 12px; border: 1px solid #475569; color: #f1f5f9; '
             f'font-family: Inter, system-ui, sans-serif; }}</style>'
         )
         header_items = [style_html]
