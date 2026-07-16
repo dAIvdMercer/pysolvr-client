@@ -153,6 +153,19 @@ class Display:
             <p style="margin-top:6px;font-size:11px;color:#94a3b8">${limit-spent:.2f} remaining ({100-pct:.0f}%)</p>
         </div>"""
 
+    def card_layout(self):
+        """Return ipywidgets.Layout matching card styling. Use to wrap interactive widget cells."""
+        try:
+            import ipywidgets as widgets
+            return widgets.Layout(
+                border='1px solid #475569',
+                border_radius='8px',
+                padding='20px',
+                margin='8px 0',
+            )
+        except ImportError:
+            return None
+
     def cost_badge(self, tokens: int, cost_usd: float):
         """Render an inline cost badge."""
         html = f'<span class="pysolvr-cost">{tokens:,} tokens | ${cost_usd:.4f}</span>'
