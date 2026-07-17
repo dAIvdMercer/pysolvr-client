@@ -63,6 +63,17 @@ class DriveManager:
                 })
         return results
 
+    def delete(self, folder: str, filename: str) -> bool:
+        """Delete a file and its .meta.json companion. Returns True if deleted."""
+        path = self.root / folder / filename
+        if not path.exists():
+            return False
+        path.unlink()
+        meta_path = path.with_suffix(path.suffix + ".meta.json")
+        if meta_path.exists():
+            meta_path.unlink()
+        return True
+
     def get_history(self, folder: str) -> list:
         """Get provenance history from .meta.json files (for resumability)."""
         files = self.list_files(folder)
