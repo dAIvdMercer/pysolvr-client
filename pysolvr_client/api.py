@@ -92,4 +92,4 @@ class ApiClient:
 
     def get_usage(self) -> dict:
         """Get usage data from account endpoint."""
-        return self.call("GET", "/account")
+        return self.call("GET", "/usage")
