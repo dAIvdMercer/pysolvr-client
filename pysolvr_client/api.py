@@ -44,11 +44,12 @@ class ApiClient:
             except Exception as e:
                 return {"ok": False, "error": str(e), "status": 0, "latency_ms": 0}
 
-    def run_async(self, endpoint: str, body: dict, timeout: int = 120, poll_interval: int = 2) -> dict:
+    def run_async(self, endpoint: str, body: dict, timeout: int = 120, poll_interval: int = 2, output=None) -> dict:
         """Submit async job, poll with spinner, return result.
 
         Returns {ok, data, error, status, latency_ms} — same shape as call().
         Pre-flight rejections (400/402/403/429) return instantly.
+        output: optional ipywidgets.Output widget to contain the spinner (prevents clearing parent).
         """
         resp = self.call("POST", endpoint, payload=body)
 
@@ -64,25 +65,46 @@ class ApiClient:
         # Poll with spinner
         from IPython.display import display, HTML, clear_output
         start = time.time()
-        display(HTML('<div style="padding:8px;color:#888;">Working...</div>'))
+        if output is not None:
+            with output:
+                clear_output(wait=True)
+                display(HTML('<div style="padding:8px;color:#888;">Working...</div>'))
+        else:
+            display(HTML('<div style="padding:8px;color:#888;">Working...</div>'))
         while (time.time() - start) < timeout:
             time.sleep(poll_interval)
             poll = self.call("GET", f"/jobs/{job_id}")
 
             if not poll["ok"]:
-                clear_output(wait=True)
+                if output is not None:
+                    with output:
+                        clear_output(wait=True)
+                else:
+                    clear_output(wait=True)
                 return poll
 
             status = poll["data"].get("status")
             if status == "complete":
-                clear_output(wait=True)
+                if output is not None:
+                    with output:
+                        clear_output(wait=True)
+                else:
+                    clear_output(wait=True)
                 elapsed_ms = int((time.time() - start) * 1000)
                 return {"ok": True, "data": poll["data"]["result"], "status": 200, "latency_ms": elapsed_ms}
             elif status == "failed":
-                clear_output(wait=True)
+                if output is not None:
+                    with output:
+                        clear_output(wait=True)
+                else:
+                    clear_output(wait=True)
                 return {"ok": False, "error": poll["data"].get("error", "Job failed"), "status": 500, "latency_ms": 0}
 
-        clear_output(wait=True)
+        if output is not None:
+            with output:
+                clear_output(wait=True)
+        else:
+            clear_output(wait=True)
         return {"ok": False, "error": f"Timeout after {timeout}s (job_id: {job_id})", "status": 0, "latency_ms": 0}
 
     def health_check(self) -> bool:
