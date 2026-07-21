@@ -37,6 +37,53 @@ class Display:
         </style>
         """
 
+    def success_html(self, message: str) -> str:
+        """Return inline success HTML string (green text, no box). Use as widgets.HTML().value."""
+        return f'<p style="color:#10b981;font-size:13px;margin:4px 0">&#10003; {message}</p>'
+
+    def error_html(self, message: str, actions: list = None) -> str:
+        """Return inline error HTML string (red text, no box unless actions present). Use as widgets.HTML().value."""
+        actions_html = ''
+        if actions:
+            links = ' | '.join(
+                f'<a href="{a["url"]}" target="_blank" style="color:{self.primary};text-decoration:none;font-weight:500">{a["label"]}</a>'
+                for a in actions
+            )
+            actions_html = f'<p style="margin-top:8px;font-size:13px">{links}</p>'
+        return f'<p style="color:#f87171;font-size:13px;margin:4px 0">{message}</p>{actions_html}'
+
+    def warning_html(self, message: str) -> str:
+        """Return inline warning HTML string (amber text, no box). Use as widgets.HTML().value."""
+        return f'<p style="color:#fbbf24;font-size:13px;margin:4px 0">{message}</p>'
+
+    def instruction_html(self, text) -> str:
+        """Return inline instruction HTML string (muted text, 12px). Use as widgets.HTML().value.
+
+        Args:
+            text: str for a single instruction, or list of str for multiple options.
+        """
+        if isinstance(text, list):
+            items = ''.join(f'<li>{t}</li>' for t in text)
+            return f'<ul style="color:#94a3b8;font-size:12px;margin:6px 0 0;padding-left:16px">{items}</ul>'
+        return f'<p style="color:#94a3b8;font-size:12px;margin:6px 0 0">{text}</p>'
+
+    def warning(self, message: str, details: str = None):
+        """Render a warning card."""
+        details_html = f'<p style="margin-top:8px;font-size:12px;color:#94a3b8">{details}</p>' if details else ''
+        html = f"""{self._styles}
+        <div class="pysolvr-card" style="border-color:#f59e0b44">
+            <h3><span class="pysolvr-badge pysolvr-warning">Warning</span></h3>
+            <p style="font-size:14px">{message}</p>
+            {details_html}
+        </div>"""
+        display(HTML(html))
+
+    def card_html(self, title: str, content: str) -> str:
+        """Return card HTML string (for embedding in widgets.HTML().value)."""
+        return (f'<div style="background:#334155;border-radius:8px;padding:20px;border:1px solid #475569;'
+                f'font-family:Inter,system-ui,sans-serif;color:#f1f5f9;font-size:14px;line-height:1.6">'
+                f'<h3 style="margin:0 0 12px;font-size:16px;font-weight:500">{title}</h3>{content}</div>')
+
     def header(self, name: str, tagline: str, version: str):
         """Render business branding header."""
         html = f"""{self._styles}
