@@ -109,7 +109,7 @@ def _on_submit(b):
             'free_text': _text.value.strip(),
         }})
         if result['ok']:
-            ui.success('Ticket submitted', f"Reference: {{result['data']['ticket_id']}}")
+            ui.success('Ticket submitted', f"We're on it — you'll hear back via email if needed. Reference: {{result['data']['ticket_id']}}")
             _text.value = ''
         else:
             ui.error(result.get('error', 'Submission failed. Please try again.'))
