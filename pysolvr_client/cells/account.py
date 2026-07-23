@@ -42,6 +42,7 @@ sub_html = ''
 if result_acct['ok']:
     d = result_acct['data']
     plan_label = d.get('plan', 'free').capitalize()
+    sub_status = d.get('subscription_status', 'active')
     limits = d.get('tier_limits', {{}})
     def _fmt(v):
         if v == 0: return 'Unlimited'
@@ -50,9 +51,51 @@ if result_acct['ok']:
     limits_rows = ''.join(f"<tr><td style='padding:3px 8px 3px 0;color:#94a3b8;text-transform:capitalize'>{{k.replace('_', ' ')}}</td><td style='padding:3px 0;color:#e2e8f0'>{{_fmt(v)}}</td></tr>" for k, v in limits.items())
     limits_html = f"<table style='border-collapse:collapse;margin-top:6px'>{{limits_rows}}</table>" if limits_rows else ''
     topup = f"Top-up balance: ${{d.get('topup_balance_usd', 0):.2f}}<br>" if d.get('topup_balance_usd') else ''
-    sub_html = f"<b>{{plan_label}}</b><br>Status: {{d.get('status', 'active')}}<br>Monthly limit: ${{d.get('monthly_limit_usd', 0):.2f}}<br>{{topup}}<br><b>Plan limits</b>{{limits_html}}<br><a href='https://{domain}/pricing' style='color:#60a5fa'>Manage plan</a>"
+    _status_badges = {{
+        'active': "<span style='color:#10b981'>Active</span>",
+        'trialing': "<span style='color:#60a5fa'>Free trial</span>",
+        'past_due': "<span style='color:#f87171'>&#9888; Payment failed &mdash; update your payment method</span>",
+        'paused': "<span style='color:#f59e0b'>Subscription paused</span>",
+        'cancelled': "<span style='color:#94a3b8'>Subscription cancelled</span>",
+    }}
+    status_badge = _status_badges.get(sub_status, sub_status)
+    sub_html = f"<b>{{plan_label}}</b><br>Status: {{status_badge}}<br>Monthly limit: ${{d.get('monthly_limit_usd', 0):.2f}}<br>{{topup}}<br><b>Plan limits</b>{{limits_html}}"
 else:
     sub_html = f"<span style='color:#f87171'>{{result_acct.get('error', 'Could not fetch account')}}</span>"
+
+_sub_widgets = [_w.HTML(sub_html)]
+if result_acct['ok']:
+    d = result_acct['data']
+    sub_status = d.get('subscription_status', 'active')
+    if sub_status != 'cancelled':
+        _portal_btn = _w.Button(description='Manage subscription', button_style='', layout=_w.Layout(margin='8px 8px 0 0'))
+        _portal_out = _w.Output()
+        def _open_portal(b):
+            with _portal_out:
+                clear_output(wait=True)
+                r = client.call('POST', '/portal')
+                if r['ok']:
+                    from IPython.display import Javascript
+                    _display(Javascript(f"window.open('{{r['data']['url']}}', '_blank')"))
+                else:
+                    ui.error(r.get('error', 'Could not open portal'))
+        _portal_btn.on_click(_open_portal)
+        _sub_widgets += [_portal_btn, _portal_out]
+    if sub_status in ('active', 'trialing') and d.get('topup_enabled'):
+        _topup_amt = d.get('topup_amount_usd', 20)
+        _topup_btn = _w.Button(description=f'Add ${{int(_topup_amt)}} credits', button_style='', layout=_w.Layout(margin='8px 0 0'))
+        _topup_out = _w.Output()
+        def _open_topup(b):
+            with _topup_out:
+                clear_output(wait=True)
+                r = client.call('POST', '/topup')
+                if r['ok']:
+                    from IPython.display import Javascript
+                    _display(Javascript(f"window.open('{{r['data']['url']}}', '_blank')"))
+                else:
+                    ui.error(r.get('error', 'Could not open top-up checkout'))
+        _topup_btn.on_click(_open_topup)
+        _sub_widgets += [_topup_btn, _topup_out]
 
 usage_html = ''
 if result_usage['ok']:
@@ -119,7 +162,7 @@ _btn.on_click(_on_submit)
 _support_static = _w.HTML('<p><b>Files:</b> Google Drive > pysolvr > {slug}</p><p><b>Docs:</b> <a href="https://{domain}/docs" style="color:#60a5fa">{domain}/docs</a></p>')
 
 _tabs = _w.Tab(children=[
-    _w.VBox([_w.HTML(sub_html)]),
+    _w.VBox(_sub_widgets),
     _w.VBox([_w.HTML(usage_html)]),
     _w.VBox([_w.HTML(version_html)]),
     _w.VBox([_w.HTML(rotate_html)]),
