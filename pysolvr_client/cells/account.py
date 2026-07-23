@@ -112,7 +112,7 @@ def cell(config: dict) -> dict:
         "        if not _text.value.strip():\n",
         "            display(ui.warning_html('Please describe your issue before submitting.'))\n",
         "            return\n",
-        "        result = client.call('POST', '/support', body={\n",
+        "        result = client.call('POST', '/support', payload={\n",
         "            'type': _type_dd.value,\n",
         f"            'feature_tag': '{slug}',\n",
         "            'free_text': _text.value.strip(),\n",
