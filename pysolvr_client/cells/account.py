@@ -7,6 +7,7 @@ def cell(config: dict) -> dict:
     name = config["business"]["name"]
     domain = config.get("site", {}).get("domain", f"{slug}.pysolvr.com")
     version = config["notebook"]["version"]
+    primary_color = config.get("growth", {}).get("site", {}).get("style", {}).get("primary_color", "#6366f1")
     public_repo = config["business"].get("public_repo", f"{slug}-client")
     changelog_url = f"https://github.com/dAIvdMercer/{public_repo}/blob/main/CHANGELOG.md"
     raw_changelog_url = f"https://raw.githubusercontent.com/dAIvdMercer/{public_repo}/main/CHANGELOG.md"
@@ -82,11 +83,10 @@ def cell(config: dict) -> dict:
         "    'border-width:0 0 2px 0 !important;border-style:solid !important;'\n",
         "    'border-color:transparent !important;box-shadow:none !important;'\n",
         "    'font-size:13px;font-family:Inter,system-ui,sans-serif;padding:8px 16px;}'\n",
-        "    '.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current {'\n",
-        "    'color:#f1f5f9 !important;border-bottom-color:#6366f1 !important;}'\n",
-        "    '.jupyter-widgets.widget-tab > .p-TabBar {border-bottom:1px solid #475569;}'\n",
+        f"    '.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current {{color:#f1f5f9 !important;border-bottom-color:{primary_color} !important;}}'\n",
+        "    '.jupyter-widgets.widget-tab > .p-TabBar {border-bottom:1px solid #475569;border-top:none !important;}'\n",
         "    '.jupyter-widgets.widget-tab > .widget-tab-contents {'\n",
-        "    'border:none;padding:12px 0 0;background:transparent;}'\n",
+        "    'border:none !important;padding:12px 0 0;background:transparent;}'\n",
         "    '</style>'\n",
         ")\n",
         "\n",
