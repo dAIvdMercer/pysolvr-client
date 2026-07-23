@@ -196,7 +196,7 @@ class Display:
             <div style="display:flex;justify-content:space-between;font-size:12px;color:#94a3b8;margin-bottom:6px">
                 <span>${spent:.2f} used</span><span>${limit:.2f} limit</span>
             </div>
-            <div class="pysolvr-bar"><div class="pysolvr-bar-fill" style="width:{pct}%;background:{color}"></div></div>
+            <div style="height:8px;border-radius:4px;background:#1e293b;overflow:hidden"><div style="height:100%;border-radius:4px;width:{pct}%;background:{color}"></div></div>
             <p style="margin-top:6px;font-size:11px;color:#94a3b8">${limit-spent:.2f} remaining ({100-pct:.0f}%)</p>
         </div>"""
 
