@@ -42,8 +42,7 @@ def cell(config: dict) -> dict:
         "    usage_html = f\"<span style='color:#f87171'>{result_usage.get('error', 'Could not fetch usage')}</span>\"\n",
         "\n",
         f"support_html = ('<p><b>Files:</b> Google Drive > pysolvr > {slug}</p>'\n",
-        f"    '<p><b>Docs:</b> <a href=\"https://{domain}/docs\" style=\"color:#60a5fa\">{domain}/docs</a></p>'\n",
-        f"    '<p><b>Email:</b> <a href=\"mailto:support@pysolvr.com?subject={name}\" style=\"color:#60a5fa\">support@pysolvr.com</a></p>')\n",
+        f"    '<p><b>Docs:</b> <a href=\"https://{domain}/docs\" style=\"color:#60a5fa\">{domain}/docs</a></p>')\n",
         "\n",
         f"_current_ver = '{version}'\n",
         "_latest_ver = _current_ver\n",
@@ -102,7 +101,7 @@ def cell(config: dict) -> dict:
         "        else:\n",
         "            display(ui.error_html(result.get('error', 'Submission failed. Please try again.')))\n",
         "_btn.on_click(_on_submit)\n",
-        "_display(_w.VBox([_type_dd, _text, _btn, _out]))\n",
+        "_display(ui.card_widget([_type_dd, _text, _btn, _out], title='Submit a support ticket'))\n",
     ]
 
     return {
