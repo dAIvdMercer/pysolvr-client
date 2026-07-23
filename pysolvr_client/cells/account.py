@@ -72,13 +72,14 @@ def cell(config: dict) -> dict:
         "if(r){IPython.notebook.kernel.execute(\\\"_rotate=client.call(\\\\\\\"POST\\\\\\\",\\\\\\\"/account/rotate-key\\\\\\\");print(_rotate.get(\\\\\\\"data\\\\\\\",{}).get(\\\\\\\"message\\\\\\\",_rotate.get(\\\\\\\"error\\\\\\\",\\\\\\\"Unknown error\\\\\\\")))\\\")}})()\""
         " style=\"background:#dc2626;color:white;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;margin-top:8px\">Rotate API key</button>')\n",
         "\n",
-        "ui.tabs({'Subscription': sub_html, 'Usage': usage_html, 'Version': version_html, 'Rotate Key': rotate_html, 'Support': support_html})\n",
-        "\n",
         "import ipywidgets as _w\n",
         "from IPython.display import display as _display\n",
+        "_acct_out = _w.Output()\n",
+        "_display(_acct_out)\n",
         "_type_dd = _w.Dropdown(\n",
         "    options=['question', 'bug', 'feature_request', 'feedback', 'billing', 'data_request'],\n",
-        "    description='Type:',\n",
+        "    description='Ticket type:',\n",
+        "    style={'description_width': 'initial'},\n",
         "    layout=_w.Layout(width='320px'),\n",
         ")\n",
         "_text = _w.Textarea(placeholder='Describe your issue or feedback...', layout=_w.Layout(width='480px', height='100px'))\n",
@@ -101,7 +102,9 @@ def cell(config: dict) -> dict:
         "        else:\n",
         "            display(ui.error_html(result.get('error', 'Submission failed. Please try again.')))\n",
         "_btn.on_click(_on_submit)\n",
-        "_display(ui.card_widget([_type_dd, _text, _btn, _out], title='Submit a support ticket'))\n",
+        "with _acct_out:\n",
+        "    ui.tabs({'Subscription': sub_html, 'Usage': usage_html, 'Version': version_html, 'Rotate Key': rotate_html, 'Support': support_html})\n",
+        "    _display(ui.card_widget([_type_dd, _text, _btn, _out], title='Submit a support ticket'))\n",
     ]
 
     return {
